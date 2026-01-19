@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Birthday Blast! 💥</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="container">
+      <header>
+        <h1>BIRTHDAY BLAST!</h1>
+        <p class="subtitle">Protect the birthday cake from alien invaders!</p>
+      </header>
+
+      <div class="game-area">
+        <div class="game-container">
+          <canvas id="gameCanvas" width="600" height="500"></canvas>
+          <div class="birthday-message" id="birthdayMessage">
+            <div class="message-text"><strong>HAPPY BIRTHDAY!!</strong></div>
+            <div class="wish-text" id="wishText"></div>
+          </div>
+        </div>
+
+        <div class="side-panel">
+          <div class="panel-section">
+            <h2>GAME STATS</h2>
+            <div class="stats">
+              <span class="stat-label">Wave:</span>
+              <span class="stat-value" id="waveCount">1</span>
+            </div>
+            <div class="stats">
+              <span class="stat-label">Aliens Defeated:</span>
+              <span class="stat-value" id="alienCount">0</span>
+            </div>
+            <div class="stats">
+              <span class="stat-label">Cake Health:</span>
+              <span class="stat-value" id="cakeHealth">100%</span>
+            </div>
+            <div class="stats">
+              <span class="stat-label">Candies:</span>
+              <span class="stat-value" id="candyCount">50</span>
+            </div>
+          </div>
+
+          <div class="panel-section">
+            <h2>CONTROLS</h2>
+            <div class="controls">
+              <div class="control-key">A / ←</div>
+              <div>Move Left</div>
+              <div class="control-key">D / →</div>
+              <div>Move Right</div>
+              <div class="control-key">SPACE</div>
+              <div>Shoot Candy</div>
+              <div class="control-key">P</div>
+              <div>Pause Game</div>
+            </div>
+          </div>
+
+          <div class="panel-section">
+            <h2>ACTIONS</h2>
+            <button id="startBtn" class="btn">START GAME</button>
+            <button id="pauseBtn" class="btn">PAUSE / RESUME</button>
+            <button id="restartBtn" class="btn">RESTART GAME</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="instructions">
+        <h3>HOW TO PLAY:</h3>
+        <ul>
+          <li>
+            Use <strong>A / D</strong> or
+            <strong>Left / Right Arrow</strong> keys to move your spaceship
+          </li>
+          <li>
+            Press <strong>SPACEBAR</strong> to shoot candies at the alien
+            invaders
+          </li>
+          <li>
+            Protect the <strong>birthday cake</strong> at the bottom of the
+            screen from alien attacks
+          </li>
+          <li>Defeat all aliens in a wave to progress to the next wave</li>
+          <li>
+            Clear <strong>3 waves</strong> to reveal the special birthday
+            message!
+          </li>
+          <li>If the cake's health reaches 0%, the game is over</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Link to external JavaScript -->
+    <script src="game.js"></script>
+  </body>
+</html>
