@@ -36,6 +36,15 @@ let candiesShot = [];
 let explosions = [];
 let stars = [];
 
+const root = document.documentElement;
+const computedStyles = getComputedStyle(root);
+
+const whiteMain = computedStyles.getPropertyValue("--white-main");
+const greenMain = computedStyles.getPropertyValue("--green-main");
+const turquoiseMain = computedStyles.getPropertyValue("--turquoise-main");
+const redMain = computedStyles.getPropertyValue("--red-main");
+const bgMessage = computedStyles.getPropertyValue("--bg-message");
+
 // player spaceship
 const player = {
   x: canvas.width / 2 - 25,
@@ -43,7 +52,6 @@ const player = {
   width: 65,
   height: 65,
   speed: 6,
-  color: "#4dffff",
   isMovingLeft: false,
   isMovingRight: false,
   lastShot: 0,
@@ -152,7 +160,7 @@ function drawCandy(x, y, size, color) {
   ctx.fillRect(x, y, size, size);
 
   // candy stripes
-  ctx.fillStyle = "#ffffff";
+  ctx.fillStyle = whiteMain;
   ctx.fillRect(x, y, size, size * 0.2);
   ctx.fillRect(x, y + size * 0.4, size, size * 0.2);
   ctx.fillRect(x, y + size * 0.8, size, size * 0.2);
@@ -173,7 +181,7 @@ function drawExplosion(x, y, radius, life) {
 
 // draw background stars
 function drawStars() {
-  ctx.fillStyle = "#ffffff";
+  ctx.fillStyle = whiteMain;
   stars.forEach((star) => {
     ctx.globalAlpha = star.brightness;
     ctx.fillRect(star.x, star.y, star.size, star.size);
@@ -191,7 +199,7 @@ function shootCandy() {
       width: 10,
       height: 20,
       speed: 8,
-      color: "#00c179",
+      color: greenMain,
     });
     player.lastShot = currentTime;
     candies--;
@@ -209,7 +217,7 @@ function alienShoot(alien) {
       width: 10,
       height: 20,
       speed: -5,
-      color: "#ff6666",
+      color: redMain,
     });
     alien.lastShot = currentTime;
   }
@@ -266,10 +274,9 @@ function checkCollisions() {
           cakeHealth = 0;
           gameOver = true;
           cakeHealthEl.textContent = "0%";
-          cakeHealthEl.style.color = "#ff6666";
         }
 
-        // create explosion on cake
+        // create explosion
         explosions.push({
           x: candy.x + candy.width / 2,
           y: candy.y + candy.height / 2,
@@ -298,7 +305,6 @@ function checkCollisions() {
         cakeHealth = 0;
         gameOver = true;
         cakeHealthEl.textContent = "0%";
-        cakeHealthEl.style.color = "#ff6666";
       }
 
       // create explosion
@@ -342,7 +348,7 @@ function updateGame() {
   if (changeDirection) {
     aliens.forEach((alien) => {
       alien.direction *= -1;
-      alien.y += 20; // move down
+      alien.y += 20;
     });
   }
 
@@ -390,7 +396,6 @@ function updateGame() {
   });
 }
 
-// draw everything
 function draw() {
   // clear canvas
   ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -417,15 +422,15 @@ function draw() {
 
   // draw game over message
   if (gameOver) {
-    ctx.fillStyle = "rgba(0, 0, 0, 0.7)";
+    ctx.fillStyle = bgMessage;
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-    ctx.fillStyle = "#ff6666";
+    ctx.fillStyle = redMain;
     ctx.font = "bold 48px Courier New";
     ctx.textAlign = "center";
     ctx.fillText("GAME OVER", canvas.width / 2, canvas.height / 2 - 30);
 
-    ctx.fillStyle = "#ffff66";
+    ctx.fillStyle = whiteMain;
     ctx.font = "24px Courier New";
     ctx.fillText(
       `You defeated ${aliensDefeated} aliens!`,
@@ -441,10 +446,10 @@ function draw() {
 
   // draw pause message
   if (gamePaused) {
-    ctx.fillStyle = "rgba(0, 0, 0, 0.7)";
+    ctx.fillStyle = bgMessage;
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-    ctx.fillStyle = "#4dffff";
+    ctx.fillStyle = turquoiseMain;
     ctx.font = "bold 48px Courier New";
     ctx.textAlign = "center";
     ctx.fillText("GAME PAUSED", canvas.width / 2, canvas.height / 2);
@@ -489,7 +494,6 @@ function startGame() {
     waveCountEl.textContent = wave;
     alienCountEl.textContent = aliensDefeated;
     cakeHealthEl.textContent = `${cakeHealth}%`;
-    cakeHealthEl.style.color = "#ffff4d";
     candyCountEl.textContent = candies;
 
     // hide birthday message
