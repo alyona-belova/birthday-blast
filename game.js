@@ -33,7 +33,6 @@ let gameOver = false;
 
 let aliens = [];
 let candiesShot = [];
-let explosions = [];
 let stars = [];
 
 const root = document.documentElement;
@@ -166,19 +165,6 @@ function drawCandy(x, y, size, color) {
   ctx.fillRect(x, y + size * 0.8, size, size * 0.2);
 }
 
-// draw explosion effect
-function drawExplosion(x, y, radius, life) {
-  const gradient = ctx.createRadialGradient(x, y, 0, x, y, radius);
-  gradient.addColorStop(0, `rgba(255, 255, 100, ${life})`);
-  gradient.addColorStop(0.7, `rgba(255, 100, 0, ${life * 0.7})`);
-  gradient.addColorStop(1, `rgba(255, 0, 0, 0)`);
-
-  ctx.fillStyle = gradient;
-  ctx.beginPath();
-  ctx.arc(x, y, radius, 0, Math.PI * 2);
-  ctx.fill();
-}
-
 // draw background stars
 function drawStars() {
   ctx.fillStyle = whiteMain;
@@ -244,15 +230,6 @@ function checkCollisions() {
           candiesShot.splice(i, 1);
           aliensDefeated++;
           alienCountEl.textContent = aliensDefeated;
-
-          // create explosion
-          explosions.push({
-            x: alien.x + alien.width / 2,
-            y: alien.y + alien.height / 2,
-            radius: 20,
-            life: 1,
-          });
-
           break;
         }
       }
@@ -275,14 +252,6 @@ function checkCollisions() {
           gameOver = true;
           cakeHealthEl.textContent = "0%";
         }
-
-        // create explosion
-        explosions.push({
-          x: candy.x + candy.width / 2,
-          y: candy.y + candy.height / 2,
-          radius: 15,
-          life: 1,
-        });
       }
     }
 
@@ -306,14 +275,6 @@ function checkCollisions() {
         gameOver = true;
         cakeHealthEl.textContent = "0%";
       }
-
-      // create explosion
-      explosions.push({
-        x: alien.x + alien.width / 2,
-        y: cake.y,
-        radius: 25,
-        life: 1,
-      });
     }
   }
 }
@@ -357,15 +318,6 @@ function updateGame() {
     candy.y -= candy.speed;
   });
 
-  // update explosions
-  for (let i = explosions.length - 1; i >= 0; i--) {
-    explosions[i].radius += 1;
-    explosions[i].life -= 0.03;
-    if (explosions[i].life <= 0) {
-      explosions.splice(i, 1);
-    }
-  }
-
   checkCollisions();
 
   // check if wave is cleared
@@ -385,15 +337,6 @@ function updateGame() {
     candies += 10 * wave; // reward player
     candyCountEl.textContent = candies;
   }
-
-  // move stars for parallax effect
-  stars.forEach((star) => {
-    star.y += 0.5;
-    if (star.y > canvas.height) {
-      star.y = 0;
-      star.x = Math.random() * canvas.width;
-    }
-  });
 }
 
 function draw() {
@@ -403,10 +346,6 @@ function draw() {
   drawStars();
 
   drawCake();
-
-  explosions.forEach((explosion) => {
-    drawExplosion(explosion.x, explosion.y, explosion.radius, explosion.life);
-  });
 
   candiesShot.forEach((candy) => {
     drawCandy(candy.x, candy.y, candy.width, candy.color);
@@ -501,7 +440,6 @@ function startGame() {
 
     // initialize game objects
     candiesShot = [];
-    explosions = [];
     initWave();
 
     // center player
