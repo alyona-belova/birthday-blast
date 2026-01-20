@@ -107,11 +107,11 @@ function initWave() {
         y: startY + row * verticalSpacing,
         width: alienWidth,
         height: alienHeight,
-        speed: 0.5 + wave * 0.1,
+        speed: 0.8 + wave * 0.15,
         direction: 1,
         image: alienImage,
         lastShot: Math.random() * 2000,
-        shotDelay: 5000 + Math.random() * 1000,
+        shotDelay: 4000 + Math.random() * 1000 - wave * 200,
         health: 1,
       });
     }
@@ -406,9 +406,9 @@ function gameLoop() {
 // show birthday message
 function showBirthdayMessage() {
   const wishes = [
-    "May your day be as sweet as this birthday cake!",
-    "Hope your birthday is out of this world!",
-    "Another year older, another year more awesome!",
+    "May your day be as sweet as this birthday cake <3",
+    "Hope your birthday is out of this world :)",
+    "Another year older, another year more awesome <3",
   ];
 
   const randomWish = wishes[Math.floor(Math.random() * wishes.length)];
@@ -508,39 +508,3 @@ restartBtn.addEventListener("click", restartGame);
 // initialize and start game
 initWave();
 gameLoop(0);
-
-// instructions for touch devices
-canvas.addEventListener("touchstart", (e) => {
-  if (!gameActive || gamePaused || gameOver) return;
-
-  const touchX = e.touches[0].clientX - canvas.getBoundingClientRect().left;
-
-  // move player to touch position
-  player.x = touchX - player.width / 2;
-
-  // keep player within bounds
-  if (player.x < 0) player.x = 0;
-  if (player.x > canvas.width - player.width)
-    player.x = canvas.width - player.width;
-
-  // shoot candy
-  shootCandy();
-
-  e.preventDefault();
-});
-
-canvas.addEventListener("touchmove", (e) => {
-  if (!gameActive || gamePaused || gameOver) return;
-
-  const touchX = e.touches[0].clientX - canvas.getBoundingClientRect().left;
-
-  // move player to touch position
-  player.x = touchX - player.width / 2;
-
-  // keep player within bounds
-  if (player.x < 0) player.x = 0;
-  if (player.x > canvas.width - player.width)
-    player.x = canvas.width - player.width;
-
-  e.preventDefault();
-});
