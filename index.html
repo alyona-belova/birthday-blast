@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
@@ -10,7 +10,9 @@
     <div class="container">
       <header>
         <h1>BIRTHDAY BLAST!</h1>
-        <p class="subtitle">Protect the birthday cake from alien invaders!</p>
+        <p class="subtitle">
+          Protect the Cake of Eternity from alien invaders!
+        </p>
       </header>
 
       <div class="game-area">
@@ -49,20 +51,6 @@
           </div>
 
           <div class="panel-section">
-            <h2>CONTROLS</h2>
-            <div class="controls">
-              <div class="control-key">A / ←</div>
-              <div>Move Left</div>
-              <div class="control-key">D / →</div>
-              <div>Move Right</div>
-              <div class="control-key">SPACE</div>
-              <div>Shoot Candy</div>
-              <div class="control-key">P</div>
-              <div>Pause Game</div>
-            </div>
-          </div>
-
-          <div class="panel-section">
             <h2>ACTIONS</h2>
             <button id="startBtn" class="btn">START GAME</button>
             <button id="pauseBtn" class="btn">PAUSE / RESUME</button>
@@ -72,31 +60,41 @@
       </div>
 
       <div class="instructions">
-        <h3>HOW TO PLAY:</h3>
-        <ul>
-          <li>
-            Use <strong>A / D</strong> or
-            <strong>Left / Right Arrow</strong> keys to move your spaceship
-          </li>
-          <li>
-            Press <strong>SPACEBAR</strong> to shoot candies at the alien
-            invaders
-          </li>
-          <li>
-            Protect the <strong>birthday cake</strong> at the bottom of the
-            screen from alien attacks
-          </li>
-          <li>Defeat all aliens in a wave to progress to the next wave</li>
-          <li>
-            Clear <strong>3 waves</strong> to reveal the special birthday
-            message!
-          </li>
-          <li>If the cake's health reaches 0%, the game is over</li>
-        </ul>
+        <div>
+          <p>
+            <strong>Krzysztof Springinsfeld</strong> was no ordinary Hogwarts
+            graduate. He was a storyteller by trade, a magician by craft, and a
+            space-traveler by necessity – for the best stories, he knew, weren't
+            found in dusty books, but written in the light of dying stars.
+          </p>
+          <p>
+            His current quest had led him to the
+            <strong>Birthday Nebula</strong>, a swirling cloud of cosmic dust
+            that glowed with the soft pink and green of a galaxy celebrating its
+            own existence. Ancient texts whispered of a secret hidden here: the
+            <strong>Cake of Eternity</strong> – not just a dessert, but a
+            repository of the forgotten knowledge, the ultimate story. To earn
+            its truth, the Cake had to be protected from
+            <strong>3 alien waves</strong>.
+          </p>
+        </div>
+
+        <div class="controls-section">
+          <h3>CONTROLS</h3>
+          <div class="controls-grid">
+            <div class="control-key">A / ←</div>
+            <div class="control-label">Move Left</div>
+            <div class="control-key">D / →</div>
+            <div class="control-label">Move Right</div>
+            <div class="control-key">SPACE</div>
+            <div class="control-label">Shoot Candy</div>
+            <div class="control-key">P</div>
+            <div class="control-label">Pause Game</div>
+          </div>
+        </div>
       </div>
     </div>
 
-    <!-- Link to external JavaScript -->
     <script src="game.js"></script>
   </body>
 </html>

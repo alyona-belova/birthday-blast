@@ -22,6 +22,9 @@ alienImg2.src = "sprites/alien_2.png";
 const alienImg3 = new Image();
 alienImg3.src = "sprites/alien_3.png";
 
+const cakeImg = new Image();
+cakeImg.src = "sprites/cake.png";
+
 let gameActive = false;
 let gamePaused = false;
 let lastTime = 0;
@@ -34,12 +37,13 @@ let gameOver = false;
 let aliens = [];
 let candiesShot = [];
 let stars = [];
+let explosions = [];
 
 const root = document.documentElement;
 const computedStyles = getComputedStyle(root);
 
 const whiteMain = computedStyles.getPropertyValue("--white-main");
-const greenMain = computedStyles.getPropertyValue("--green-main");
+const orangeMain = computedStyles.getPropertyValue("--orange-main");
 const turquoiseMain = computedStyles.getPropertyValue("--turquoise-main");
 const redMain = computedStyles.getPropertyValue("--red-main");
 const bgMessage = computedStyles.getPropertyValue("--bg-message");
@@ -70,12 +74,9 @@ for (let i = 0; i < 100; i++) {
 // birthday cake
 const cake = {
   x: canvas.width / 2 - 75,
-  y: canvas.height - 40,
+  y: canvas.height - 70,
   width: 150,
-  height: 30,
-  color: "#ff66b3",
-  frostingColor: "#ffccff",
-  candleColor: "#ffff66",
+  height: 60,
 };
 
 // initialize alien wave
@@ -107,7 +108,7 @@ function initWave() {
         y: startY + row * verticalSpacing,
         width: alienWidth,
         height: alienHeight,
-        speed: 0.8 + wave * 0.15,
+        speed: 0.8 + wave * 0.3,
         direction: 1,
         image: alienImage,
         lastShot: Math.random() * 2000,
@@ -118,51 +119,54 @@ function initWave() {
   }
 }
 
-// !! Draw birthday cake
-function drawCake() {
-  // Cake base
-  ctx.fillStyle = cake.color;
-  ctx.fillRect(cake.x, cake.y, cake.width, cake.height);
-
-  // Frosting
-  ctx.fillStyle = cake.frostingColor;
-  ctx.fillRect(cake.x, cake.y, cake.width, cake.height * 0.3);
-
-  // Cake layers
-  ctx.fillStyle = "#ff3385";
-  ctx.fillRect(cake.x + 5, cake.y + 5, cake.width - 10, cake.height * 0.15);
-
-  // Candles
-  const candleCount = 5;
-  const candleSpacing = cake.width / (candleCount + 1);
-  for (let i = 1; i <= candleCount; i++) {
-    const candleX = cake.x + candleSpacing * i - 3;
-
-    // Candle
-    ctx.fillStyle = cake.candleColor;
-    ctx.fillRect(candleX, cake.y - 20, 6, 20);
-
-    // Flame
-    ctx.fillStyle = "#ff9900";
-    ctx.fillRect(candleX + 1, cake.y - 25, 4, 8);
-  }
-
-  // Cake plate
-  ctx.fillStyle = "#cccccc";
-  ctx.fillRect(cake.x - 10, cake.y + cake.height, cake.width + 20, 10);
-}
-
 // draw candy
 function drawCandy(x, y, size, color) {
-  // candy body
-  ctx.fillStyle = color;
-  ctx.fillRect(x, y, size, size);
+  const coloredStripeHeight = size * 0.35;
+  const whiteStripeHeight = size * 0.15;
 
-  // candy stripes
+  ctx.fillStyle = color;
+  ctx.fillRect(x, y, size, coloredStripeHeight);
+
   ctx.fillStyle = whiteMain;
-  ctx.fillRect(x, y, size, size * 0.2);
-  ctx.fillRect(x, y + size * 0.4, size, size * 0.2);
-  ctx.fillRect(x, y + size * 0.8, size, size * 0.2);
+  ctx.fillRect(x, y + coloredStripeHeight, size, whiteStripeHeight);
+
+  ctx.fillStyle = color;
+  ctx.fillRect(
+    x,
+    y + coloredStripeHeight + whiteStripeHeight,
+    size,
+    coloredStripeHeight,
+  );
+
+  ctx.fillStyle = whiteMain;
+  ctx.fillRect(
+    x,
+    y + coloredStripeHeight * 2 + whiteStripeHeight,
+    size,
+    whiteStripeHeight,
+  );
+
+  ctx.fillStyle = color;
+  ctx.fillRect(
+    x,
+    y + coloredStripeHeight * 2 + whiteStripeHeight * 2,
+    size,
+    coloredStripeHeight,
+  );
+}
+
+// draw explosion
+function drawExplosion(x, y, radius, life) {
+  const gradient = ctx.createRadialGradient(x, y, 0, x, y, radius);
+  gradient.addColorStop(0, `rgba(255, 200, 100, ${life})`);
+  gradient.addColorStop(0.5, `rgba(255, 150, 50, ${life * 0.8})`);
+  gradient.addColorStop(0.8, `rgba(255, 100, 0, ${life * 0.5})`);
+  gradient.addColorStop(1, "rgba(255, 50, 0, 0)");
+
+  ctx.fillStyle = gradient;
+  ctx.beginPath();
+  ctx.arc(x, y, radius, 0, Math.PI * 2);
+  ctx.fill();
 }
 
 // draw background stars
@@ -185,7 +189,7 @@ function shootCandy() {
       width: 10,
       height: 20,
       speed: 8,
-      color: greenMain,
+      color: orangeMain,
     });
     player.lastShot = currentTime;
     candies--;
@@ -225,15 +229,29 @@ function checkCollisions() {
           candy.y < alien.y + alien.height &&
           candy.y + candy.height > alien.y
         ) {
+          // store alien position
+          const hitAlien = aliens[j];
+
           // hit
           aliens.splice(j, 1);
           candiesShot.splice(i, 1);
           aliensDefeated++;
           alienCountEl.textContent = aliensDefeated;
+
+          // create explosion
+          explosions.push({
+            x: hitAlien.x + hitAlien.width / 2,
+            y: hitAlien.y + hitAlien.height / 2,
+            radius: 0,
+            maxRadius: 25,
+            life: 1.0,
+          });
+
           break;
         }
       }
     }
+
     // alien candy hits cake
     else if (candy.speed < 0) {
       if (
@@ -242,10 +260,23 @@ function checkCollisions() {
         candy.y < cake.y + cake.height &&
         candy.y + candy.height > cake.y
       ) {
+        // store candy position
+        const hitX = candy.x + candy.width / 2;
+        const hitY = candy.y + candy.height / 2;
+
         // hit cake
         candiesShot.splice(i, 1);
-        cakeHealth -= 2;
+        cakeHealth -= 3;
         cakeHealthEl.textContent = `${cakeHealth}%`;
+
+        // create explosion on cake
+        explosions.push({
+          x: hitX,
+          y: hitY,
+          radius: 0,
+          maxRadius: 20,
+          life: 1.0,
+        });
 
         if (cakeHealth <= 0) {
           cakeHealth = 0;
@@ -265,10 +296,22 @@ function checkCollisions() {
   for (let i = aliens.length - 1; i >= 0; i--) {
     const alien = aliens[i];
     if (alien.y + alien.height > cake.y) {
+      // store alien position
+      const cakeAlien = aliens[i];
+
       // alien reached the cake
       aliens.splice(i, 1);
       cakeHealth -= 15;
       cakeHealthEl.textContent = `${cakeHealth}%`;
+
+      // create explosion on cake
+      explosions.push({
+        x: cakeAlien.x + cakeAlien.width / 2,
+        y: cake.y,
+        radius: 0,
+        maxRadius: 30,
+        life: 1.0,
+      });
 
       if (cakeHealth <= 0) {
         cakeHealth = 0;
@@ -318,6 +361,17 @@ function updateGame() {
     candy.y -= candy.speed;
   });
 
+  // update explosions
+  for (let i = explosions.length - 1; i >= 0; i--) {
+    const explosion = explosions[i];
+    explosion.radius += 2;
+    explosion.life -= 0.05;
+
+    if (explosion.life <= 0) {
+      explosions.splice(i, 1);
+    }
+  }
+
   checkCollisions();
 
   // check if wave is cleared
@@ -345,8 +399,15 @@ function draw() {
 
   drawStars();
 
-  drawCake();
+  // draw cake
+  ctx.drawImage(cakeImg, cake.x, cake.y, cake.width, cake.height);
 
+  // draw explosions
+  explosions.forEach((explosion) => {
+    drawExplosion(explosion.x, explosion.y, explosion.radius, explosion.life);
+  });
+
+  // draw candies
   candiesShot.forEach((candy) => {
     drawCandy(candy.x, candy.y, candy.width, candy.color);
   });
@@ -374,12 +435,12 @@ function draw() {
     ctx.fillText(
       `You defeated ${aliensDefeated} aliens!`,
       canvas.width / 2,
-      canvas.height / 2 + 30
+      canvas.height / 2 + 30,
     );
     ctx.fillText(
       "Press RESTART to play again",
       canvas.width / 2,
-      canvas.height / 2 + 70
+      canvas.height / 2 + 70,
     );
   }
 
