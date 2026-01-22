@@ -527,11 +527,15 @@ document.addEventListener("keydown", (e) => {
   switch (e.key) {
     case "a":
     case "A":
+    case "ф":
+    case "Ф":
     case "ArrowLeft":
       player.isMovingLeft = true;
       break;
     case "d":
     case "D":
+    case "в":
+    case "В":
     case "ArrowRight":
       player.isMovingRight = true;
       break;
@@ -541,6 +545,8 @@ document.addEventListener("keydown", (e) => {
       break;
     case "p":
     case "P":
+    case "з":
+    case "З":
       togglePause();
       break;
   }
