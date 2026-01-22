@@ -556,11 +556,15 @@ document.addEventListener("keyup", (e) => {
   switch (e.key) {
     case "a":
     case "A":
+    case "ф":
+    case "Ф":
     case "ArrowLeft":
       player.isMovingLeft = false;
       break;
     case "d":
     case "D":
+    case "в":
+    case "В":
     case "ArrowRight":
       player.isMovingRight = false;
       break;
