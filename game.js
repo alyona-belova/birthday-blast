@@ -108,7 +108,7 @@ function initWave() {
         y: startY + row * verticalSpacing,
         width: alienWidth,
         height: alienHeight,
-        speed: 0.8 + wave * 0.3,
+        speed: 0.8 + wave * 0.4,
         direction: 1,
         image: alienImage,
         lastShot: Math.random() * 2000,
